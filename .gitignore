@@ -1,0 +1,5 @@
+bin/
+obj/
+.vs/
+.vscode/.ropeproject/
+appsettings.Local.json
