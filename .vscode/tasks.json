@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Primera ejecución (base de datos + sitio)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Crear base de datos SQL Server",
+        "Ejecutar TecnoSoft"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Compilar TecnoSoft",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Crear base de datos SQL Server",
+      "type": "process",
+      "command": "sqlcmd",
+      "args": ["-S", "localhost", "-E", "-b", "-i", "${workspaceFolder}/database/01-create-database.sql"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Ejecutar TecnoSoft",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["run", "--launch-profile", "http"],
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "aspnet",
+        "pattern": { "regexp": "." },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Building|Restoring",
+          "endsPattern": "Now listening on:"
+        }
+      }
+    }
+  ]
+}
