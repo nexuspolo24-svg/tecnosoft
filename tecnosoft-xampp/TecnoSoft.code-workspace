@@ -1,0 +1,44 @@
+{
+  "folders": [
+    { "name": "TecnoSoft", "path": "." }
+  ],
+  "settings": {
+    "php.validate.executablePath": "C:/xampp/php/php.exe",
+    "files.encoding": "utf8",
+    "files.eol": "\n",
+    "search.exclude": { "**/app/runtime/**": true }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "TecnoSoft: preparar configuración local",
+        "type": "process",
+        "command": "C:/xampp/php/php.exe",
+        "args": ["tools/configure.php"],
+        "options": { "cwd": "${workspaceFolder:TecnoSoft}" },
+        "problemMatcher": []
+      },
+      {
+        "label": "TecnoSoft: importar base nueva",
+        "type": "process",
+        "command": "C:/xampp/php/php.exe",
+        "args": ["tools/import.php"],
+        "options": { "cwd": "${workspaceFolder:TecnoSoft}" },
+        "dependsOn": "TecnoSoft: preparar configuración local",
+        "problemMatcher": []
+      },
+      {
+        "label": "TecnoSoft: iniciar web",
+        "type": "process",
+        "command": "C:/xampp/php/php.exe",
+        "args": ["-S", "127.0.0.1:8080", "-t", "public"],
+        "options": { "cwd": "${workspaceFolder:TecnoSoft}" },
+        "dependsOn": "TecnoSoft: preparar configuración local",
+        "group": { "kind": "build", "isDefault": true },
+        "presentation": { "reveal": "always", "panel": "dedicated" },
+        "problemMatcher": []
+      }
+    ]
+  }
+}
