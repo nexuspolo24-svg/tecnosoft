@@ -1,5 +1,23 @@
 # TecnoSoft Solutions
 
+## Versión local actual con PHP y XAMPP
+
+El avance del **17 de octubre de 2026**, incluidas las validaciones de correos, teléfonos y nombres, está en **[tecnosoft-xampp](tecnosoft-xampp/)**.
+
+- [Instrucciones para abrir el proyecto](tecnosoft-xampp/README.md).
+- [Área de trabajo de Visual Studio Code](tecnosoft-xampp/TecnoSoft.code-workspace).
+- [Reglas de validación y pruebas realizadas](tecnosoft-xampp/docs/validaciones.md).
+- [Modelo relacional y tablas](tecnosoft-xampp/docs/modelo-relacional.html).
+
+Esta versión utiliza **PHP y MySQL/MariaDB**. Incluye catálogo, cuentas, pedidos y formularios con validaciones en el navegador y en el servidor. La configuración privada y las sesiones se generan en cada instalación; no se incluyen en GitHub.
+
+Para comenzar, sigue el README de `tecnosoft-xampp`. No vuelvas a importar el SQL si ya tienes la base local instalada.
+
+---
+
+## Documentación de la versión anterior con .NET y SQL Server
+
+
 Prototipo web de TecnoSoft Solutions basado en la versión 14 del Figma Make compartido. La portada conserva la paleta crema, verde oscuro y verde lima, y la pantalla de acceso sigue el diseño bicolor del prototipo.
 
 ## Avance funcional
