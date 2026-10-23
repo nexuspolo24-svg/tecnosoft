@@ -1,0 +1,11 @@
+TecnoSoft Solutions - Preparación para InfinityFree - 23/10/2026
+
+ESTADO: actualización administrativa preparada, NO PUBLICADA.
+La publicación fue cancelada. Subir a GitHub no cambia el sitio público.
+
+Lee PUBLICACION.md antes de utilizar estos archivos.
+La migración del alojamiento debe ensayarse en un respaldo restaurable.
+No importes la instalación vacía sobre una base con registros.
+
+El proyecto local completo se encuentra en ../tecnosoft-xampp.
+No se incluyen credenciales, sesiones ni registros personales.
