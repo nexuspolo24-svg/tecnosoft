@@ -3,3 +3,8 @@ obj/
 .vs/
 .vscode/.ropeproject/
 appsettings.Local.json
+**/config.local.php
+**/mail.local.php
+**/app/runtime/
+**/_private/runtime/
+*.log

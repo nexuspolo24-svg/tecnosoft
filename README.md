@@ -1,17 +1,36 @@
 # TecnoSoft Solutions
 
-## Versión local actual con PHP y XAMPP
+## Versión actual: PHP y XAMPP · 23 de octubre de 2026
 
-El avance del **17 de octubre de 2026**, incluidas las validaciones de correos, teléfonos y nombres, está en **[tecnosoft-xampp](tecnosoft-xampp/)**.
+El proyecto académico actual está en **[tecnosoft-xampp](tecnosoft-xampp/)**. Incluye tienda de tecnología y juegos, cuentas de cliente y administración, inventario, pedidos, ventas presenciales y reportes en córdobas nicaragüenses.
 
-- [Instrucciones para abrir el proyecto](tecnosoft-xampp/README.md).
+- [Cómo abrir, instalar o actualizar la aplicación](tecnosoft-xampp/README.md).
 - [Área de trabajo de Visual Studio Code](tecnosoft-xampp/TecnoSoft.code-workspace).
-- [Reglas de validación y pruebas realizadas](tecnosoft-xampp/docs/validaciones.md).
-- [Modelo relacional y tablas](tecnosoft-xampp/docs/modelo-relacional.html).
+- [Reglas administrativas y límites del demo](tecnosoft-xampp/docs/reglas-administracion.md).
+- [Validaciones de correos, teléfonos, nombres y formularios](tecnosoft-xampp/docs/validaciones.md).
+- [Base de datos: 30 tablas, columnas y relaciones](tecnosoft-xampp/docs/modelo-relacional.html).
+- [Diagrama de relaciones](tecnosoft-xampp/docs/modelo-er.png).
+- [Resultados de las pruebas](tecnosoft-xampp/docs/verificacion-administracion.md).
+- [Preparación de InfinityFree, pendiente de publicar](tecnosoft-infinityfree/PUBLICACION.md).
 
-Esta versión utiliza **PHP y MySQL/MariaDB**. Incluye catálogo, cuentas, pedidos y formularios con validaciones en el navegador y en el servidor. La configuración privada y las sesiones se generan en cada instalación; no se incluyen en GitHub.
+### Avances de esta versión
 
-Para comenzar, sigue el README de `tecnosoft-xampp`. No vuelvas a importar el SQL si ya tienes la base local instalada.
+- Administración de productos, precios, costos, existencias y visibilidad.
+- Pedidos en efectivo o transferencia; domicilio, retiro o coordinación digital.
+- Confirmación de correo por SMTP real antes de pedir por transferencia.
+- Gestión de pagos y estados, cancelación sin doble devolución de stock y ventas presenciales.
+- Clientes, consultas, servicios con diagnóstico, cotización y seguimiento.
+- Reportes por fecha de pago, margen bruto conocido, exportación CSV y auditoría.
+- Actualización del panel cada 15 segundos, con pausa durante la edición.
+- Validaciones en navegador y servidor, permisos por rol, sesiones, CSRF y contraseñas protegidas mediante hash.
+
+### Abrir en tu computadora
+
+Enciende MySQL en XAMPP y abre tecnosoft-xampp/TecnoSoft.code-workspace. Usa **TecnoSoft: iniciar web** y entra a http://127.0.0.1:8080/. Sigue el README de esa carpeta para una instalación nueva o para configurar tu propia cuenta administradora.
+
+**Si ya tienes una base con registros**, respáldala y usa **TecnoSoft: actualizar base de datos**. No importes la instalación vacía encima.
+
+GitHub contiene código, modelo y catálogo de demostración. Las contraseñas de base y SMTP, sesiones, respaldos y registros personales no se incluyen; cada instalación genera su configuración privada. Esta subida no despliega la actualización en el alojamiento ni sincroniza la base de XAMPP.
 
 ---
 
