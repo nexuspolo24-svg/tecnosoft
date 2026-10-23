@@ -1,237 +1,267 @@
 erDiagram
-    users ||--o{ user_roles : "user_id"
-    roles ||--o{ user_roles : "role_id"
-    users ||--o{ addresses : "user_id"
-    categories o|--o{ categories : "parent_id"
-    categories ||--o{ products : "category_id"
-    brands o|--o{ products : "brand_id"
-    products ||--o{ product_images : "product_id"
-    products ||--o{ product_attributes : "product_id"
-    products ||--o{ inventory_movements : "product_id"
-    users o|--o{ inventory_movements : "actor_id"
-    users ||--o| carts : "user_id"
-    carts ||--o{ cart_items : "cart_id"
-    products ||--o{ cart_items : "product_id"
-    users ||--o| wishlists : "user_id"
-    wishlists ||--o{ wishlist_items : "wishlist_id"
-    products ||--o{ wishlist_items : "product_id"
-    users ||--o{ orders : "user_id"
-    orders ||--o{ order_items : "order_id"
-    products ||--o{ order_items : "product_id"
-    orders ||--o{ order_addresses : "order_id"
-    orders ||--o{ order_status_history : "order_id"
-    users o|--o{ order_status_history : "actor_id"
-    orders ||--o{ payments : "order_id"
-    orders ||--o{ shipments : "order_id"
-    shipments ||--o{ shipment_items : "shipment_id,order_id"
-    order_items ||--o{ shipment_items : "order_item_id,order_id"
-    users o|--o{ service_requests : "user_id"
-    services ||--o{ service_requests : "service_id"
-    service_requests ||--o{ service_request_history : "request_id"
-    users o|--o{ service_request_history : "actor_id"
-    users o|--o{ contact_messages : "user_id"
-    roles {
-        SMALLINT id
-        VARCHAR name
-    }
-    users {
-        BIGINT id
-        VARCHAR name
-        VARCHAR email
-        VARCHAR password_hash
-        VARCHAR phone
-        BOOLEAN active
-        TIMESTAMP created_at
-    }
-    user_roles {
-        BIGINT user_id
-        SMALLINT role_id
-    }
-    addresses {
-        BIGINT id
-        BIGINT user_id
-        VARCHAR recipient
-        VARCHAR phone
-        VARCHAR department
-        VARCHAR city
-        VARCHAR address_line
-    }
-    categories {
-        SMALLINT id
-        SMALLINT parent_id
-        VARCHAR name
-        VARCHAR slug
-    }
-    brands {
-        SMALLINT id
-        VARCHAR name
-    }
-    products {
-        BIGINT id
-        SMALLINT category_id
-        SMALLINT brand_id
-        VARCHAR sku
-        VARCHAR name
-        TEXT description
-        ENUM kind
-        DECIMAL price
-        INT stock
-        BOOLEAN active
-        TIMESTAMP created_at
-    }
-    product_images {
-        BIGINT id
-        BIGINT product_id
-        VARCHAR url
-        VARCHAR alt
-        SMALLINT sort_order
-    }
-    product_attributes {
-        BIGINT product_id
-        VARCHAR name
-        VARCHAR value
-    }
-    inventory_movements {
-        BIGINT id
-        BIGINT product_id
-        BIGINT actor_id
-        INT quantity
-        VARCHAR reason
-        TIMESTAMP created_at
-    }
-    carts {
-        BIGINT id
-        BIGINT user_id
-        TIMESTAMP updated_at
-    }
-    cart_items {
-        BIGINT cart_id
-        BIGINT product_id
-        SMALLINT quantity
-    }
-    wishlists {
-        BIGINT id
-        BIGINT user_id
-    }
-    wishlist_items {
-        BIGINT wishlist_id
-        BIGINT product_id
-    }
-    orders {
-        BIGINT id
-        BIGINT user_id
-        CHAR request_key
-        ENUM status
-        CHAR currency
-        DECIMAL subtotal
-        DECIMAL shipping_total
-        DECIMAL tax_total
-        DECIMAL total
-        ENUM delivery_method
-        VARCHAR notes
-        TIMESTAMP created_at
-    }
-    order_items {
-        BIGINT id
-        BIGINT order_id
-        BIGINT product_id
-        VARCHAR product_name
-        VARCHAR sku
-        SMALLINT quantity
-        DECIMAL unit_price
-        DECIMAL line_total
-    }
-    order_addresses {
-        BIGINT id
-        BIGINT order_id
-        ENUM type
-        VARCHAR recipient
-        VARCHAR phone
-        VARCHAR department
-        VARCHAR city
-        VARCHAR address_line
-    }
-    order_status_history {
-        BIGINT id
-        BIGINT order_id
-        BIGINT actor_id
-        ENUM status
-        VARCHAR note
-        TIMESTAMP created_at
-    }
-    payments {
-        BIGINT id
-        BIGINT order_id
-        ENUM method
-        ENUM status
-        DECIMAL amount
-        CHAR currency
-        VARCHAR provider_reference
-        DATETIME paid_at
-        TIMESTAMP created_at
-    }
-    shipments {
-        BIGINT id
-        BIGINT order_id
-        VARCHAR carrier
-        VARCHAR tracking_code
-        ENUM status
-        DATETIME dispatched_at
-        DATETIME delivered_at
-    }
-    shipment_items {
-        BIGINT shipment_id
-        BIGINT order_item_id
-        BIGINT order_id
-        SMALLINT quantity
-    }
-    services {
-        SMALLINT id
-        VARCHAR name
-        TEXT description
-        BOOLEAN active
-    }
-    service_requests {
-        BIGINT id
-        BIGINT user_id
-        SMALLINT service_id
-        VARCHAR name
-        VARCHAR email
-        VARCHAR phone
-        VARCHAR device
-        TEXT description
-        ENUM modality
-        ENUM status
-        DECIMAL quoted_total
-        DATE preferred_date
-        TIMESTAMP created_at
-    }
-    service_request_history {
-        BIGINT id
-        BIGINT request_id
-        BIGINT actor_id
-        ENUM status
-        VARCHAR note
-        TIMESTAMP created_at
-    }
-    contact_messages {
-        BIGINT id
-        BIGINT user_id
-        VARCHAR name
-        VARCHAR email
-        VARCHAR phone
-        VARCHAR subject
-        TEXT message
-        ENUM status
-        TIMESTAMP created_at
-    }
-    settings {
-        VARCHAR name
-        TEXT value
-    }
-    login_attempts {
-        BIGINT id
-        VARCHAR email
-        VARCHAR ip
-        TIMESTAMP created_at
-    }
+  roles {
+    SMALLINT id PK
+    string name
+  }
+  users {
+    BIGINT id PK
+    string name
+    string email
+    string password_hash
+    DATETIME email_verified_at
+    string phone
+    BOOLEAN active
+    TIMESTAMP created_at
+  }
+  user_roles {
+    BIGINT user_id PK,FK
+    SMALLINT role_id PK,FK
+  }
+  addresses {
+    BIGINT id PK
+    BIGINT user_id FK
+    string recipient
+    string phone
+    string department
+    string city
+    string address_line
+  }
+  categories {
+    SMALLINT id PK
+    SMALLINT parent_id FK
+    string name
+    string slug
+  }
+  brands {
+    SMALLINT id PK
+    string name
+  }
+  products {
+    BIGINT id PK
+    SMALLINT category_id FK
+    SMALLINT brand_id FK
+    string sku
+    string name
+    string description
+    string kind
+    DECIMAL price
+    DECIMAL cost_price
+    INT revision
+    INT stock
+    BOOLEAN active
+    TIMESTAMP created_at
+  }
+  product_images {
+    BIGINT id PK
+    BIGINT product_id FK
+    string url
+    string alt
+    SMALLINT sort_order
+  }
+  product_attributes {
+    BIGINT product_id PK,FK
+    string name PK
+    string value
+  }
+  inventory_movements {
+    BIGINT id PK
+    BIGINT product_id FK
+    BIGINT actor_id FK
+    INT quantity
+    string reason
+    TIMESTAMP created_at
+  }
+  carts {
+    BIGINT id PK
+    BIGINT user_id FK
+    TIMESTAMP updated_at
+  }
+  cart_items {
+    BIGINT cart_id PK,FK
+    BIGINT product_id PK,FK
+    SMALLINT quantity
+  }
+  wishlists {
+    BIGINT id PK
+    BIGINT user_id FK
+  }
+  wishlist_items {
+    BIGINT wishlist_id PK,FK
+    BIGINT product_id PK,FK
+  }
+  orders {
+    BIGINT id PK
+    BIGINT user_id FK
+    string request_key
+    string sales_channel
+    string customer_name
+    string customer_phone
+    string status
+    string currency
+    DECIMAL subtotal
+    DECIMAL shipping_total
+    DECIMAL tax_total
+    DECIMAL total
+    string delivery_method
+    string notes
+    TIMESTAMP created_at
+  }
+  order_items {
+    BIGINT id PK
+    BIGINT order_id FK
+    BIGINT product_id FK
+    string product_name
+    string sku
+    SMALLINT quantity
+    DECIMAL unit_price
+    DECIMAL unit_cost
+    DECIMAL line_total
+  }
+  order_addresses {
+    BIGINT id PK
+    BIGINT order_id FK
+    string type
+    string recipient
+    string phone
+    string department
+    string city
+    string address_line
+  }
+  order_status_history {
+    BIGINT id PK
+    BIGINT order_id FK
+    BIGINT actor_id FK
+    string status
+    string note
+    TIMESTAMP created_at
+  }
+  payments {
+    BIGINT id PK
+    BIGINT order_id FK
+    string method
+    string status
+    DECIMAL amount
+    string currency
+    string provider_reference
+    DATETIME paid_at
+    TIMESTAMP created_at
+  }
+  shipments {
+    BIGINT id PK
+    BIGINT order_id FK
+    string carrier
+    string tracking_code
+    string status
+    DATETIME dispatched_at
+    DATETIME delivered_at
+  }
+  shipment_items {
+    BIGINT shipment_id PK,FK
+    BIGINT order_item_id PK,FK
+    BIGINT order_id FK
+    SMALLINT quantity
+  }
+  services {
+    SMALLINT id PK
+    string name
+    string description
+    BOOLEAN active
+  }
+  service_requests {
+    BIGINT id PK
+    BIGINT user_id FK
+    SMALLINT service_id FK
+    string name
+    string email
+    string phone
+    string device
+    string description
+    string modality
+    string status
+    DECIMAL quoted_total
+    DATE preferred_date
+    TIMESTAMP created_at
+  }
+  service_request_history {
+    BIGINT id PK
+    BIGINT request_id FK
+    BIGINT actor_id FK
+    string status
+    string note
+    TIMESTAMP created_at
+  }
+  contact_messages {
+    BIGINT id PK
+    BIGINT user_id FK
+    string name
+    string email
+    string phone
+    string subject
+    string message
+    string status
+    TIMESTAMP created_at
+  }
+  settings {
+    string name PK
+    string value
+  }
+  login_attempts {
+    BIGINT id PK
+    string email
+    string ip
+    TIMESTAMP created_at
+  }
+  schema_migrations {
+    string version PK
+    TIMESTAMP applied_at
+  }
+  email_verifications {
+    BIGINT id PK
+    BIGINT user_id FK
+    string token_hash
+    DATETIME expires_at
+    DATETIME used_at
+    TIMESTAMP created_at
+  }
+  audit_log {
+    BIGINT id PK
+    BIGINT actor_id FK
+    string action
+    string entity
+    BIGINT entity_id
+    string details
+    TIMESTAMP created_at
+  }
+  users ||--o{ user_roles : "user_id"
+  roles ||--o{ user_roles : "role_id"
+  users ||--o{ addresses : "user_id"
+  categories |o--o{ categories : "parent_id"
+  categories ||--o{ products : "category_id"
+  brands |o--o{ products : "brand_id"
+  products ||--o{ product_images : "product_id"
+  products ||--o{ product_attributes : "product_id"
+  products ||--o{ inventory_movements : "product_id"
+  users |o--o{ inventory_movements : "actor_id"
+  users ||--o{ carts : "user_id"
+  carts ||--o{ cart_items : "cart_id"
+  products ||--o{ cart_items : "product_id"
+  users ||--o{ wishlists : "user_id"
+  wishlists ||--o{ wishlist_items : "wishlist_id"
+  products ||--o{ wishlist_items : "product_id"
+  users ||--o{ orders : "user_id"
+  orders ||--o{ order_items : "order_id"
+  products ||--o{ order_items : "product_id"
+  orders ||--o{ order_addresses : "order_id"
+  orders ||--o{ order_status_history : "order_id"
+  users |o--o{ order_status_history : "actor_id"
+  orders ||--o{ payments : "order_id"
+  orders ||--o{ shipments : "order_id"
+  shipments ||--o{ shipment_items : "shipment_id,order_id"
+  order_items ||--o{ shipment_items : "order_item_id,order_id"
+  users |o--o{ service_requests : "user_id"
+  services ||--o{ service_requests : "service_id"
+  service_requests ||--o{ service_request_history : "request_id"
+  users |o--o{ service_request_history : "actor_id"
+  users |o--o{ contact_messages : "user_id"
+  users ||--o{ email_verifications : "user_id"
+  users ||--o{ audit_log : "actor_id"

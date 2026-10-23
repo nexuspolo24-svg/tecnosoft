@@ -14,7 +14,7 @@ Actualización del 17 de octubre de 2026. Aplicada al proyecto local; esta actua
 
 El formato del teléfono se eligió para Nicaragua. No se comprueba que el número esté asignado a una línea real. Se conserva como cadena para no perder ceros iniciales.
 
-El correo admite dominios públicos, empresariales y educativos. Esta función comprueba el formato, sin consultar DNS ni enviar mensajes. Confirmar la propiedad de un correo requiere implementar un flujo de verificación por enlace.
+El correo admite dominios públicos, empresariales y educativos. Esta función comprueba el formato, sin consultar DNS ni enviar mensajes. La versión administrativa del 23 de octubre incorpora confirmación por enlace SMTP: consulta reglas-administracion.md.
 
 ## Archivos
 
@@ -39,4 +39,4 @@ Las pruebas utilizaron una copia del proyecto y una base de datos aislada en el 
 
 Abre `TecnoSoft.code-workspace`, enciende MySQL en XAMPP y ejecuta la tarea `TecnoSoft: iniciar web`. Visita `http://127.0.0.1:8080` y recarga con Ctrl+F5. Si el servidor ya estaba iniciado, basta con recargar.
 
-No vuelvas a importar el SQL: las tablas existentes sirven para esta actualización. El ZIP conserva la estructura del proyecto y excluye la configuración privada y las sesiones.
+Para pasar de esta versión de validaciones a la administración del 23 de octubre ejecuta tools/migrate.php con un respaldo previo. No vuelvas a importar el SQL de instalación nueva sobre registros existentes. El ZIP conserva la estructura del proyecto y excluye la configuración privada y las sesiones.

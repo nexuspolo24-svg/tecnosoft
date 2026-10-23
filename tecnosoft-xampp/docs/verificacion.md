@@ -1,4 +1,6 @@
-# Verificación · 10 de octubre de 2026
+# Verificación inicial · 10 de octubre de 2026
+
+Informe histórico. Consulta **verificacion-administracion.md** para la versión administrativa del 23 de octubre: el modelo actual tiene 30 tablas y 33 relaciones y ya incorpora panel y SMTP.
 
 Probado con los binarios PHP 8.1.25 y MariaDB 10.4.32 de XAMPP en una instancia aislada dentro de la carpeta de trabajo. No se modificó la base de datos habitual de XAMPP.
 
