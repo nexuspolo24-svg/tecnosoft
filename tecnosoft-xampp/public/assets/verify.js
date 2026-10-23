@@ -1,0 +1,3 @@
+'use strict';
+const token=new URLSearchParams(location.search).get('token');history.replaceState(null,'','verify.php');
+document.querySelector('#verify-button').addEventListener('click',async function(){this.disabled=true;const note=document.querySelector('#verify-feedback');try{const s=await fetch('api.php?action=session').then(r=>r.json());const r=await fetch('api.php?action=verify_email',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':s.csrf},body:JSON.stringify({token})});const d=await r.json();if(!r.ok)throw Error(d.error);note.textContent=d.message;this.hidden=true;}catch(e){note.textContent=e.message;this.disabled=false;}});
