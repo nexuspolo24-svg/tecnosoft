@@ -13,6 +13,7 @@ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 email VARCHAR(190) NOT NULL UNIQUE,
 password_hash VARCHAR(255) NOT NULL,
+email_verified_at DATETIME NULL,
 phone VARCHAR(25) NULL,
 active BOOLEAN NOT NULL DEFAULT TRUE,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -59,6 +60,8 @@ name VARCHAR(160) NOT NULL,
 description TEXT NOT NULL,
 kind ENUM('physical','digital') NOT NULL DEFAULT 'physical',
 price DECIMAL(12,2) NOT NULL CHECK(price>=0),
+cost_price DECIMAL(12,2) NULL CHECK(cost_price>=0),
+revision INT UNSIGNED NOT NULL DEFAULT 1,
 stock INT UNSIGNED NOT NULL DEFAULT 0,
 active BOOLEAN NOT NULL DEFAULT TRUE,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -130,13 +133,16 @@ CREATE TABLE orders (
 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 user_id BIGINT UNSIGNED NOT NULL,
 request_key CHAR(36) NOT NULL,
+sales_channel ENUM('web','store') NOT NULL DEFAULT 'web',
+customer_name VARCHAR(100) NULL,
+customer_phone VARCHAR(25) NULL,
 status ENUM('pending','confirmed','preparing','shipped','completed','cancelled') NOT NULL DEFAULT 'pending',
 currency CHAR(3) NOT NULL DEFAULT 'NIO',
 subtotal DECIMAL(12,2) NOT NULL CHECK(subtotal>=0),
 shipping_total DECIMAL(12,2) NOT NULL DEFAULT 0 CHECK(shipping_total>=0),
 tax_total DECIMAL(12,2) NOT NULL DEFAULT 0 CHECK(tax_total>=0),
 total DECIMAL(12,2) NOT NULL CHECK(total=subtotal+shipping_total+tax_total),
-delivery_method ENUM('pickup','delivery') NOT NULL DEFAULT 'pickup',
+delivery_method ENUM('pickup','delivery','digital') NOT NULL DEFAULT 'pickup',
 notes VARCHAR(1000) NULL,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(user_id) REFERENCES users(id),
@@ -152,6 +158,7 @@ product_name VARCHAR(160) NOT NULL,
 sku VARCHAR(60) NOT NULL,
 quantity SMALLINT UNSIGNED NOT NULL CHECK(quantity>0),
 unit_price DECIMAL(12,2) NOT NULL CHECK(unit_price>=0),
+unit_cost DECIMAL(12,2) NULL CHECK(unit_cost>=0),
 line_total DECIMAL(12,2) NOT NULL CHECK(line_total=quantity*unit_price),
 FOREIGN KEY(order_id) REFERENCES orders(id),
 FOREIGN KEY(product_id) REFERENCES products(id),
@@ -282,3 +289,33 @@ INDEX idx_attempts_email(email,created_at),
 INDEX idx_attempts_ip(ip,created_at)
 ) ENGINE=InnoDB;
 
+
+CREATE TABLE schema_migrations (
+version VARCHAR(80) PRIMARY KEY,
+applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS email_verifications (
+id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+user_id BIGINT UNSIGNED NOT NULL,
+token_hash CHAR(64) NOT NULL UNIQUE,
+expires_at DATETIME NOT NULL,
+used_at DATETIME NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+INDEX idx_verification_user(user_id,created_at)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS audit_log (
+id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+actor_id BIGINT UNSIGNED NOT NULL,
+action VARCHAR(80) NOT NULL,
+entity VARCHAR(80) NOT NULL,
+entity_id BIGINT UNSIGNED NOT NULL,
+details TEXT NOT NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(actor_id) REFERENCES users(id)
+) ENGINE=InnoDB;
+INSERT IGNORE INTO settings(name,value) VALUES
+('whatsapp','50587266171'),('pickup_point','Punto de retiro a coordinar por WhatsApp'),
+('delivery_fee','0.00'),('transfer_instructions','Demostración académica: coordina los datos de transferencia con el administrador. No transfieras dinero real durante las pruebas.');
+
+INSERT INTO schema_migrations(version) VALUES ('2026-10-administracion');
