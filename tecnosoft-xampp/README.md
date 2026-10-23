@@ -1,85 +1,108 @@
 # TecnoSoft Solutions
 
-Primera versión local basada en el prototipo de Figma facilitado. PHP 8.1+, MariaDB 10.4+ (XAMPP) o MySQL 8. Moneda: **córdoba nicaragüense, NIO / C$**. Sin Composer ni npm.
+Tienda y administración para una demostración académica de tecnología y juegos para PC. PHP 8.1+, MariaDB 10.4+ de XAMPP o MySQL 8. Moneda: **córdoba nicaragüense (NIO / C$)**. Incluye la biblioteca PHPMailer; no requiere Composer ni npm.
 
-## Incluye
+## Abrir el proyecto que ya está instalado
 
-- Diseño adaptable a móvil, catálogo, búsqueda, filtros, juegos, detalles y carrito.
-- Registro, inicio y cierre de sesión reales con contraseñas almacenadas mediante hash con `password_hash`.
-- Pedidos con cálculo en servidor, transacciones, control de stock, historial e idempotencia.
-- Formulario de consultas y servicios con persistencia en MySQL; seguimiento desde la cuenta para solicitudes enviadas con sesión iniciada.
-- Logo SVG/PNG e isotipo conservados del diseño de Figma; el logo usa tipografía de sistema para ser editable.
-- 27 tablas, 31 relaciones, SQL de creación, datos de ejemplo, diagrama Mermaid, mapa SVG/PNG y diccionario de datos.
+1. Enciende **MySQL** desde XAMPP.
+2. Abre **TecnoSoft.code-workspace** en Visual Studio Code.
+3. Ejecuta **Terminal → Ejecutar tarea → TecnoSoft: iniciar web**, o **Ctrl+Shift+B**.
+4. Entra a [la tienda local](http://127.0.0.1:8080/) y accede con tu cuenta.
+5. Una cuenta administradora verá **Administración** en la cabecera. También puede entrar a [el panel](http://127.0.0.1:8080/admin.php).
 
-## Instalación en XAMPP
+Para este servidor PHP no hace falta iniciar Apache. Para cerrar: **Ctrl+C** en la terminal del servidor y **Stop** en MySQL de XAMPP. Los registros permanecen guardados.
 
-1. Descomprime la carpeta `tecnosoft` en una ubicación de tu elección. No es necesario copiarla a `htdocs` para usar la opción recomendada.
-2. Abre XAMPP y pulsa **Start** en **MySQL**.
-3. Copia `app/config.example.php` como `app/config.local.php`. Ajusta usuario, contraseña y puerto a tu instalación. Los valores vacíos de contraseña son solo para un entorno local de XAMPP.
-4. Abre PowerShell en la carpeta `tecnosoft` y ejecuta:
+## Actualizar una instalación anterior
 
-```powershell
-& 'C:\xampp\php\php.exe' .\tools\import.php
-& 'C:\xampp\php\php.exe' -S 127.0.0.1:8080 -t .\public
-```
+**No vuelvas a importar la instalación nueva sobre una base existente.** Primero guarda una exportación SQL de la base y una copia de tus archivos privados de configuración.
 
-5. Abre **http://127.0.0.1:8080**. Crea una cuenta desde **Iniciar sesión → Crea una cuenta**. No hay usuarios ni contraseñas predeterminados.
+Con MySQL encendido, ejecuta la tarea **TecnoSoft: actualizar base de datos**, o desde la carpeta del proyecto:
 
-La importación crea una base nueva llamada `tecnosoft`; si ya existe, se detiene sin alterarla. Si la creación falla a mitad de camino, revisa el error y las tablas creadas antes de volver a importar. Los DDL de MySQL no son una sola transacción.
+    C:/xampp/php/php.exe tools/migrate.php
 
-Alternativa: inicia Apache y MySQL, abre phpMyAdmin y ejecuta `database/schema.sql` y luego `database/seed.sql`, en ese orden. Configura un VirtualHost de Apache cuyo **DocumentRoot sea la carpeta `public`**; las credenciales y el SQL deben permanecer fuera de la raíz pública. El servidor PHP anterior evita necesitar ese VirtualHost para comenzar.
+La migración agrega columnas y tablas para administración, correo, costos y auditoría. Conserva usuarios, productos y pedidos. Se puede repetir: comprueba las columnas existentes y registra la versión. Los cambios de estructura de MySQL no se pueden deshacer como una sola transacción; conserva el respaldo.
 
-## Abrir y trabajar en Visual Studio Code
+Después de actualizar recarga el navegador con **Ctrl+F5**.
 
-1. Abre **Archivo → Abrir área de trabajo desde archivo** y selecciona `TecnoSoft.code-workspace`, dentro de la carpeta `tecnosoft`. Conserva el archivo junto al resto del proyecto.
-2. En **Terminal → Ejecutar tarea**, selecciona **TecnoSoft: preparar configuración local**. Revisa `app/config.local.php` y enciende MySQL en XAMPP.
-3. Para la primera instalación, ejecuta la tarea **TecnoSoft: importar base nueva**. Si ya la importaste, omite este paso; el importador no sobrescribe una base existente.
-4. Ejecuta **TecnoSoft: iniciar web**, o pulsa **Ctrl+Shift+B**. Abre **http://127.0.0.1:8080**. Para detener el servidor, usa **Ctrl+C** en su terminal.
+## Instalar en otra computadora
 
-El área de trabajo abre todos los archivos editables de PHP, HTML, CSS, JavaScript, SQL y documentación. Usa PHP de `C:/xampp/php/php.exe`; si instalaste XAMPP en otra carpeta, ajusta esa ruta en el archivo de área de trabajo. No requiere extensiones adicionales. Las tareas de preparación conservan tu configuración local si ya existe.
+1. Descomprime la carpeta completa.
+2. Inicia MySQL de XAMPP.
+3. Ejecuta **TecnoSoft: preparar configuración local**. Se crea app/config.local.php si no existía.
+4. Revisa servidor, puerto, base, usuario y contraseña en ese archivo.
+5. Para una instalación vacía con la base tecnosoft, ejecuta **TecnoSoft: importar base nueva**.
+6. Ejecuta **TecnoSoft: iniciar web**.
 
-## Validación de formularios
+Como alternativa importa **database/tecnosoft-completo.sql** en phpMyAdmin, en una instalación nueva. El archivo contiene las 30 tablas y los datos de demostración. No incluye cuentas personales, pedidos anteriores ni contraseñas.
 
-La versión local incluye validaciones en HTML y JavaScript, repetidas en PHP antes de guardar los datos. Se aplican al registro, inicio de sesión, consultas, solicitudes de servicio y teléfono de los pedidos.
+Si necesitas trasladar tus registros, exporta la base original con phpMyAdmin e impórtala en el equipo de destino en vez de importar el catálogo nuevo. Los archivos de la página y los registros de MySQL se comparten por separado.
 
-- Correos: dirección completa con un solo `@`, dominio y extensión, por ejemplo `ana@gmail.com`, `ana@outlook.com` o `ana@empresa.com.ni`. Admite puntos y etiquetas con `+`; no se limita a proveedores de una lista.
-- Teléfonos: solo dígitos ASCII, 8 dígitos nacionales o `505` seguido de 8 dígitos. Ejemplos: `88887777` y `50588887777`. No admite `+`, espacios, letras, guiones ni decimales. Se conserva como texto.
-- Nombres: de 2 a 100 caracteres, al menos dos letras, con tildes y letras Unicode; admite espacios simples, apóstrofos y guiones entre palabras. Rechaza números, emojis y otros símbolos.
-- Mensajes y notas: conservan la puntuación y los saltos de línea; rechazan caracteres de control no permitidos.
-- Contraseñas: mantienen símbolos; en el registro se exigen 10 caracteres como mínimo y 72 bytes como máximo. No se recortan ni se modifican.
+## Activar al administrador
 
-Los errores aparecen junto al campo. PHP rechaza también solicitudes enviadas directamente a la API. Esto valida el formato del correo; no comprueba que exista ni envía enlaces de confirmación.
+Primero crea una cuenta desde la tienda con el correo **nexuspolo24@gmail.com** y tu propia contraseña. Ejecuta **TecnoSoft: activar administrador**, o:
 
-Abre el proyecto local como antes y recarga con **Ctrl+F5** para cargar los archivos actualizados. No se requiere una migración ni volver a importar SQL. Detalles y pruebas en `docs/validaciones.md`.
+    C:/xampp/php/php.exe tools/admin.php nexuspolo24@gmail.com
 
-## Base de datos y modelo
+El comando solo concede el rol a una cuenta existente y activa. No crea contraseñas y no existe una clave predeterminada. Para otro administrador usa su correo como argumento. La activación solo está disponible por terminal, fuera de la web. Recarga la tienda después.
 
-- `database/tecnosoft-completo.sql`: creación y datos de ejemplo en un único archivo para importar en phpMyAdmin. Usar en una instalación nueva.
-- `database/schema.sql`: creación de las 27 tablas, claves externas, índices y validaciones.
-- `database/seed.sql`: 24 productos, 4 servicios, categorías y roles. **Todos los precios y existencias son ficticios**; no son una conversión de los importes de Figma.
-- `docs/modelo-relacional.html`: visor navegable con columnas y claves externas. Se abre directamente en el navegador.
-- `docs/modelo-er.mmd`: diagrama completo en Mermaid, con atributos y relaciones.
-- `docs/modelo-er.svg`: mapa visual de todas las tablas y sus relaciones.
-- `docs/diccionario-datos.md`: tipos, claves, reglas de negocio y alcance de esta versión.
+## Funciones implementadas
 
-## Estructura
+- Catálogo adaptable a móvil, categorías, juegos, búsqueda, presupuesto, orden y detalles.
+- Cuenta de cliente, registro, acceso, salida y seguimiento de sus pedidos y servicios.
+- Carrito guardado en el navegador, precios calculados en servidor y reintentos sin duplicar pedidos.
+- Efectivo o transferencia; domicilio, retiro acordado o entrega digital de carritos digitales.
+- Correo confirmado obligatorio antes de pedir por transferencia; pago recibido registrado por el administrador después de revisarlo.
+- Enlaces de WhatsApp con número de pedido, productos y total, o con el texto de la consulta. El cliente decide abrir y enviar el mensaje.
+- Productos nuevos, edición de precio, costo, imagen HTTPS, stock y visibilidad. Los productos sin stock no permiten agregar unidades.
+- Pedidos con estados e historial; cancelación de pedidos sin cobrar devuelve stock una sola vez.
+- Ventas presenciales cobradas en efectivo y entregadas.
+- Clientes, consultas, diagnóstico, cotización y seguimiento de servicios.
+- Reportes por fecha de pago en horario de Nicaragua, ventas por día, productos más vendidos, margen bruto conocido, bajo stock y exportación CSV.
+- Configuración de atención, costo de envío y correo SMTP; movimientos de inventario y auditoría administrativa.
+- Actualización automática del panel cada 15 segundos en resumen, pedidos, clientes, productos y actividad. Se pausa al editar, abrir un diálogo o trabajar en ventas, servicios o configuración.
 
-```text
-app/          Configuración privada
-public/       Única raíz de publicación web
-  api.php     API PHP con PDO
-  assets/     Estilos, JavaScript, logo e ilustración
-database/     Creación y datos de ejemplo
-docs/         Modelo, diccionario y resultados de verificación
-tools/        Importador CLI de instalación nueva
-```
+El administrador conserva las facultades de superusuario del demo. El registro público siempre crea clientes; nunca concede permisos de administración.
 
-## Alcance de esta primera versión
+## Correo real SMTP
 
-Los pedidos son solicitudes de **retiro en tienda y pago en efectivo pendiente de confirmación**. No se realizan cobros en línea ni se envían correos. En la demostración el envío y los impuestos adicionales son cero; hay que definir precios, política fiscal, entrega y facturación antes de operar.
+Entra a **Administración → Configuración → Correo real · SMTP**.
 
-El modelo incluye pagos, envíos parciales, direcciones, roles, favoritos y carrito persistente para ampliaciones. Sus pantallas administrativas y sus flujos todavía no están implementados. El carrito de esta versión permanece en el navegador y se valida contra MySQL al enviar el pedido. Las licencias digitales no se entregan automáticamente. No incluye recuperación de contraseña ni verificación de correo.
+Para Gmail: servidor **smtp.gmail.com**, puerto **587**, seguridad **TLS**, usuario y remitente de tu cuenta. Introduce una **contraseña de aplicación**, guarda y pulsa **Enviar prueba a mi correo**. Google requiere verificación en dos pasos para crear contraseñas de aplicación: [instrucciones oficiales](https://support.google.com/mail/answer/185833?hl=es). No uses tu contraseña habitual de Gmail.
 
-Las fotografías ilustrativas proceden de las mismas referencias Unsplash del prototipo y requieren conexión a internet; existe una imagen SVG local de respaldo. Confirma fotos y modelos exactos antes de vender. Los contactos y horarios se dejaron pendientes para evitar publicar los números de ejemplo de Figma.
+La dirección base local es **http://127.0.0.1:8080**. Debe corresponder al servidor que abre el enlace. Un enlace local se utiliza en esa misma computadora; al publicar se cambia por la dirección HTTPS de la tienda.
 
-La contraseña se guarda como hash; las consultas usan parámetros PDO, las sesiones usan cookies HttpOnly y los formularios usan CSRF. El servicio se enlaza solo a `127.0.0.1` para desarrollo. Para publicar se necesita HTTPS, usuario MySQL con permisos limitados, límites de solicitudes del servidor, copias de seguridad, información comercial definitiva y los flujos pendientes de operación.
+Las credenciales se guardan en **app/mail.local.php**, fuera de public, excluido del ZIP y de Git. La API no devuelve la contraseña guardada. El campo vacío la conserva. PHPMailer verifica los certificados del servidor SMTP.
+
+Para probar el flujo completo:
+
+1. Inicia sesión como cliente y entra a **Mi cuenta**.
+2. Pulsa **Enviar confirmación de correo**.
+3. Abre tu correo, sigue el enlace y pulsa **Confirmar mi correo**.
+4. Vuelve a Mi cuenta y pulsa **Actualizar confirmación**.
+5. Ya puedes elegir transferencia. El pedido seguirá pendiente de pago hasta la revisión del administrador.
+
+El enlace vence a los 30 minutos, se utiliza una vez y la base guarda su hash. Se admite un envío por minuto y hasta diez al día por usuario. Si SMTP no está configurado o falla, la aplicación informa el error; no simula correos enviados.
+
+## Base y modelo
+
+- database/schema.sql: estructura nueva de **30 tablas y 33 claves externas**.
+- database/seed.sql: 24 productos, cuatro servicios, categorías y roles de ejemplo.
+- database/administracion.sql: tablas y valores complementarios de la actualización; para bases existentes se ejecuta mediante tools/migrate.php.
+- docs/modelo-relacional.html: visor de todas las columnas, claves, índices y relaciones.
+- docs/modelo-er.svg y modelo-er.png: mapa de relaciones.
+- docs/modelo-er.mmd: atributos y cardinalidades en Mermaid.
+- docs/diccionario-datos.md: tipos y restricciones.
+- docs/reglas-administracion.md: reglas de funcionamiento y límites.
+- docs/verificacion-administracion.md: resultados de las pruebas de esta versión.
+
+## Alcance académico
+
+Precios y existencias iniciales son ficticios. No hay cobros bancarios automáticos, facturación fiscal, reembolsos, recuperación de contraseña ni descarga automática de juegos o licencias. Las entregas digitales se coordinan después del pago. Los pedidos pendientes reservan stock hasta que el administrador los atiende o cancela; no hay vencimiento automático de reservas.
+
+El costo histórico de las ventas anteriores es desconocido y permanece vacío. El reporte muestra las unidades sin costo y calcula margen solo para unidades con costo registrado. El margen no equivale a utilidad neta: no resta gastos, impuestos ni costos del transporte. No se aplica un impuesto adicional en este demo.
+
+Los listados administrativos muestran los últimos 200 pedidos, clientes, consultas y servicios, hasta 1,000 productos y las últimas 50 acciones o movimientos. Los reportes consultan todos los pagos del período seleccionado, hasta 366 días.
+
+Las fotos del catálogo requieren Internet y tienen una imagen local de respaldo. El servidor de desarrollo escucha solo en 127.0.0.1. Si usas Apache, su DocumentRoot debe ser public; app y database deben quedar fuera de la raíz publicada.
+
+Esta versión local se prepara por separado del sitio de InfinityFree y del repositorio de GitHub. Compartir el ZIP no actualiza automáticamente ninguno de ellos.

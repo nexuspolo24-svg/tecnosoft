@@ -1,3 +1,6 @@
 app/config.local.php
 app/runtime/
 *.log
+
+app/mail.local.php
+app/mail-*
