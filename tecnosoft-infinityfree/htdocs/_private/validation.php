@@ -36,6 +36,7 @@ function tsPasswordError(string $value, bool $register): string {
     if (!mb_check_encoding($value, 'UTF-8') || str_contains($value, "\0")) {
         return 'La contraseña contiene caracteres no permitidos.';
     }
+    if ($register && preg_match('/[\p{Z}\x{0009}-\x{000D}\x{0085}\x{FEFF}]/u', $value)) return 'La contraseña no admite espacios ni caracteres de separación.';
     if (strlen($value) > 72) return 'La contraseña admite como máximo 72 bytes; las tildes y algunos símbolos ocupan más de un byte.';
     if ($register && mb_strlen($value) < 10) return 'Usa una contraseña de al menos 10 caracteres.';
     return $value === '' ? 'Escribe tu contraseña.' : '';

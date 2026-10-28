@@ -20,8 +20,16 @@ function intField(array $d,string $key,int $min=1,int $max=2147483647): int {$v=
 function cents(mixed $v): int {if(!(is_string($v)||is_int($v))||!preg_match('/^[0-9]{1,9}(?:\\.[0-9]{1,2})?$/D',(string)$v))fail('Importe inválido: usa hasta dos decimales y valores positivos.');return(int)round((float)$v*100);}
 function decimal(int $c): string {return number_format($c/100,2,'.','');}
 function db(): PDO {$p=__DIR__.'/config.local.php';if(!is_file($p))throw new RuntimeException('Falta config.local.php');$c=require $p;$db=new PDO("mysql:host={$c['host']};port={$c['port']};dbname={$c['database']};charset=utf8mb4",$c['user'],$c['password'],[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);$db->exec("SET time_zone='+00:00'");return $db;}
-function currentUser(PDO $db): ?array {$id=$_SESSION['user']['id']??null;if(!$id)return null;$u=run($db,"SELECT id,name,email,phone,email_verified_at,EXISTS(SELECT 1 FROM user_roles ur JOIN roles r ON r.id=ur.role_id WHERE ur.user_id=users.id AND r.name='admin') is_admin FROM users WHERE id=? AND active=1",[$id])->fetch();if(!$u){unset($_SESSION['user']);return null;}$u['is_admin']=(bool)$u['is_admin'];$_SESSION['user']=$u;return $u;}
+function currentUser(PDO $db): ?array {
+ $id=$_SESSION['user']['id']??null;if(!$id)return null;
+ $u=run($db,"SELECT id,name,email,phone,email_verified_at,password_version,EXISTS(SELECT 1 FROM user_roles ur JOIN roles r ON r.id=ur.role_id WHERE ur.user_id=users.id AND r.name='admin') is_admin FROM users WHERE id=? AND active=1",[$id])->fetch();
+ if(!$u||!isset($_SESSION['password_version'])||(int)$_SESSION['password_version']!==(int)$u['password_version']){
+  unset($_SESSION['user'],$_SESSION['password_version']);return null;
+ }
+ unset($u['password_version']);$u['is_admin']=(bool)$u['is_admin'];$_SESSION['user']=$u;return $u;
+}
 function requireUser(): int {if(empty($_SESSION['user']['id']))fail('Inicia sesión para continuar.',401);return(int)$_SESSION['user']['id'];}
+function requireCustomer(): int {$id=requireUser();if(!empty($_SESSION['user']['is_admin']))fail('Las cuentas administradoras solo pueden gestionar la tienda; no pueden realizar compras.',403);return $id;}
 function requireAdmin(): int {$id=requireUser();if(empty($_SESSION['user']['is_admin']))fail('Esta operación requiere una cuenta administradora.',403);return $id;}
 function settings(PDO $db): array {return array_column($db->query('SELECT name,value FROM settings')->fetchAll(),'value','name');}
 function audit(PDO $db,int $actor,string $action,string $entity,int $id,array $detail=[]): void {run($db,'INSERT INTO audit_log(actor_id,action,entity,entity_id,details) VALUES (?,?,?,?,?)',[$actor,$action,$entity,$id,json_encode($detail,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);}

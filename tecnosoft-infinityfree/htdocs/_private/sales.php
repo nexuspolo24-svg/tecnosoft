@@ -1,7 +1,7 @@
 <?php
 if(!defined('TECNOSOFT_INTERNAL')){http_response_code(404);exit;}
 function createOrder(PDO $db,array $d,bool $store=false): array {
- $uid=$store?requireAdmin():requireUser();$key=field($d,'request_key',36);
+ $uid=$store?requireAdmin():requireCustomer();$key=field($d,'request_key',36);
  if(!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/D',$key))fail('Clave de pedido inválida.');
  $db->beginTransaction();
  // El bloqueo por comprador también serializa el reintento de una misma clave.
