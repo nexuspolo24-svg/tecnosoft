@@ -10,7 +10,7 @@ Actualización del 17 de octubre de 2026. Aplicada al proyecto local; esta actua
 | Teléfono | `88887777`, `22556677`, `50588887777` | Letras, signos, espacios, longitudes distintas de 8 u 11 y prefijos de 11 dígitos distintos de `505` |
 | Nombre | `José María`, `María-José`, `O'Connor`, `D’Ávila` | Números, emojis, etiquetas, símbolos no indicados, separadores al inicio o al final, espacios consecutivos y menos de dos letras |
 | Mensaje y notas | Texto, puntuación, tildes, tabulaciones y saltos de línea | Caracteres nulos y otros controles invisibles |
-| Contraseña | Letras, números y símbolos, sin modificar el texto | En registro menos de 10 caracteres, más de 72 bytes y caracteres nulos |
+| Contraseña | Letras, números y símbolos, sin modificar el texto | En registro menos de 10 caracteres, más de 72 bytes, espacios o separadores, y caracteres nulos |
 
 El formato del teléfono se eligió para Nicaragua. No se comprueba que el número esté asignado a una línea real. Se conserva como cadena para no perder ceros iniciales.
 
@@ -40,3 +40,11 @@ Las pruebas utilizaron una copia del proyecto y una base de datos aislada en el 
 Abre `TecnoSoft.code-workspace`, enciende MySQL en XAMPP y ejecuta la tarea `TecnoSoft: iniciar web`. Visita `http://127.0.0.1:8080` y recarga con Ctrl+F5. Si el servidor ya estaba iniciado, basta con recargar.
 
 Para pasar de esta versión de validaciones a la administración del 23 de octubre ejecuta tools/migrate.php con un respaldo previo. No vuelvas a importar el SQL de instalación nueva sobre registros existentes. El ZIP conserva la estructura del proyecto y excluye la configuración privada y las sesiones.
+
+## Ajuste del 26 de octubre de 2026
+
+Las contraseñas nuevas rechazan espacios al inicio, intermedios o finales, tabulaciones, saltos de línea y separadores Unicode, tanto en JavaScript como en PHP. No se recortan ni se transforman. El inicio de sesión conserva la comprobación exacta de contraseñas existentes para no bloquear cuentas anteriores.
+
+Las cuentas administradoras no tienen carrito ni controles para agregar productos y el servidor rechaza sus pedidos web. Esto no modifica la venta presencial a clientes desde el panel.
+
+La recuperación exige las mismas reglas de contraseña nueva y una confirmación idéntica. El inicio de sesión conserva compatibilidad con contraseñas antiguas. No se recortan espacios silenciosamente de contraseñas. Véase recuperacion-contrasena.md.

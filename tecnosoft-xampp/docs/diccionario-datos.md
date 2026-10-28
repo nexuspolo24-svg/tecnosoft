@@ -1,6 +1,6 @@
 # Diccionario de datos · TecnoSoft Solutions
 
-Versión administrativa · 23 de octubre de 2026. **30 tablas y 33 claves externas**, incluidas dos relaciones compuestas de envíos. Moneda NIO. Fechas guardadas en UTC; reportes en America/Managua.
+Versión administrativa · 26 de octubre de 2026. **31 tablas y 34 claves externas**, incluidas dos relaciones compuestas de envíos. Moneda NIO. Fechas guardadas en UTC; reportes en America/Managua.
 
 Carrito, favoritos, atributos, marcas y envíos parciales permanecen para ampliaciones; no todos tienen pantalla propia. El carrito operativo se conserva en el navegador y se valida al comprar.
 
@@ -28,6 +28,7 @@ name VARCHAR(40) NOT NULL UNIQUE
 | name | VARCHAR(100) NOT NULL |
 | email | VARCHAR(190) NOT NULL UNIQUE |
 | password_hash | VARCHAR(255) NOT NULL |
+| password_version | INT UNSIGNED NOT NULL DEFAULT 1 |
 | email_verified_at | DATETIME NULL |
 | phone | VARCHAR(25) NULL |
 | active | BOOLEAN NOT NULL DEFAULT TRUE |
@@ -40,6 +41,7 @@ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 email VARCHAR(190) NOT NULL UNIQUE,
 password_hash VARCHAR(255) NOT NULL,
+password_version INT UNSIGNED NOT NULL DEFAULT 1,
 email_verified_at DATETIME NULL,
 phone VARCHAR(25) NULL,
 active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -728,4 +730,35 @@ entity_id BIGINT UNSIGNED NOT NULL,
 details TEXT NOT NULL,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(actor_id) REFERENCES users(id)
+```
+
+
+## password_resets
+
+| Columna | Definición SQL |
+|---|---|
+| id | BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY |
+| user_id | BIGINT UNSIGNED NULL |
+| email_hash | CHAR(64) NOT NULL |
+| ip_hash | CHAR(64) NOT NULL |
+| token_hash | CHAR(64) NULL UNIQUE |
+| expires_at | DATETIME NULL |
+| used_at | DATETIME NULL |
+| created_at | TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP |
+
+Restricciones e índices:
+
+```sql
+id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+user_id BIGINT UNSIGNED NULL,
+email_hash CHAR(64) NOT NULL,
+ip_hash CHAR(64) NOT NULL,
+token_hash CHAR(64) NULL UNIQUE,
+expires_at DATETIME NULL,
+used_at DATETIME NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+INDEX idx_reset_user(user_id,created_at),
+INDEX idx_reset_email(email_hash,created_at),
+INDEX idx_reset_ip(ip_hash,created_at)
 ```

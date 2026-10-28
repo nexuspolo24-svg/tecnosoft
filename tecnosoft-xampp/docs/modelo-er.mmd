@@ -8,6 +8,7 @@ erDiagram
     string name
     string email
     string password_hash
+    INT password_version
     DATETIME email_verified_at
     string phone
     BOOLEAN active
@@ -232,6 +233,16 @@ erDiagram
     string details
     TIMESTAMP created_at
   }
+  password_resets {
+    BIGINT id PK
+    BIGINT user_id FK
+    string email_hash
+    string ip_hash
+    string token_hash
+    DATETIME expires_at
+    DATETIME used_at
+    TIMESTAMP created_at
+  }
   users ||--o{ user_roles : "user_id"
   roles ||--o{ user_roles : "role_id"
   users ||--o{ addresses : "user_id"
@@ -265,3 +276,4 @@ erDiagram
   users |o--o{ contact_messages : "user_id"
   users ||--o{ email_verifications : "user_id"
   users ||--o{ audit_log : "actor_id"
+  users |o--o{ password_resets : "user_id"

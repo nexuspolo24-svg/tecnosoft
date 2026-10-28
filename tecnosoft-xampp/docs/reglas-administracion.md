@@ -2,9 +2,9 @@
 
 ## Usuarios y permisos
 
-El registro exige nombre válido, correo completo y contraseña de 10 caracteres como mínimo, hasta 72 bytes. Se conserva el hash de la contraseña. Correos únicos, sesiones HttpOnly y SameSite=Lax, renovación de sesión al iniciar o salir y tokens CSRF para operaciones de escritura.
+El registro exige nombre válido, correo completo y contraseña de 10 caracteres como mínimo, hasta 72 bytes y sin espacios ni separadores. Se conserva el hash de la contraseña. Correos únicos, sesiones HttpOnly y SameSite=Lax, renovación de sesión al iniciar o salir y tokens CSRF para operaciones de escritura.
 
-Un cliente solo consulta sus pedidos y sus solicitudes asociadas a su cuenta. La API y la página administrativa consultan en MySQL la actividad y el rol de la cuenta. Desactivar una cuenta o retirar su rol afecta la sesión ya iniciada. El superusuario se activa mediante tools/admin.php por terminal.
+Un cliente solo consulta sus pedidos y sus solicitudes asociadas a su cuenta. La API y la página administrativa consultan en MySQL la actividad y el rol de la cuenta. Desactivar una cuenta o retirar su rol afecta la sesión ya iniciada. El superusuario se activa mediante tools/admin.php por terminal. Las cuentas con rol admin solo gestionan: no ven el carrito ni botones de compra y checkout las rechaza con 403, aunque también conserven el rol customer. La venta presencial a clientes sigue disponible como operación administrativa.
 
 ## Validación
 
@@ -60,4 +60,16 @@ El CSV identifica período y moneda y neutraliza celdas que podrían interpretar
 
 ## Límites acordados
 
-Demostración académica sin cobros reales automáticos, facturas fiscales, recuperación de contraseña, reembolsos, entrega automática de archivos o reservas con vencimiento automático. La configuración SMTP privada debe completarse para usar correo real. El proceso local no actualiza el alojamiento público.
+Demostración académica sin cobros reales automáticos, facturas fiscales, reembolsos, entrega automática de archivos o reservas con vencimiento automático. La configuración SMTP privada debe completarse para usar correo real. El proceso local no actualiza el alojamiento público.
+
+## Recuperación de contraseña
+
+En Iniciar sesión → Olvidé mi contraseña se solicita un enlace al correo registrado de una cuenta activa. Reutiliza el SMTP privado. La respuesta es igual para correos conocidos, desconocidos e inactivos; un fallo de entrega se registra de forma privada e invalida el enlace. Un SMTP sin configurar informa indisponibilidad sin distinguir cuentas.
+
+El token aleatorio de 32 bytes viaja en el fragmento del enlace, se retira de la barra al abrir el formulario y en MySQL se conserva solo su hash SHA-256. Vence en treinta minutos, sirve una vez y un envío nuevo anula los anteriores. No cambia la contraseña hasta enviar y confirmar la nueva. Se admiten diez solicitudes diarias por correo, veinte por hora desde una conexión y un minuto entre solicitudes; también cuentan los correos desconocidos.
+
+La nueva contraseña cumple las reglas del registro y debe coincidir con su confirmación. El cambio aumenta users.password_version, invalida los enlaces pendientes y las sesiones anteriores, elimina el bloqueo de intentos de acceso y exige iniciar sesión. No concede roles ni confirma automáticamente el correo. Las cuentas desactivadas no pueden recuperar el acceso.
+
+La instalación previa necesita tools/migrate.php, con respaldo antes de ejecutarlo. Agrega password_version y password_resets sin borrar registros existentes. Las sesiones previas a esta ampliación deben iniciar sesión otra vez.
+
+Los detalles de productos admiten cierre al pulsar fuera del rectángulo del panel. Un clic iniciado dentro, agregar al carrito, X y Escape conservan su comportamiento esperado. No se aplica el cierre exterior a formularios con datos sin guardar.
