@@ -15,7 +15,9 @@ if($action==='logout'){$_SESSION=[];session_regenerate_id(true);$_SESSION['csrf'
 try{
  $db=db();$user=currentUser($db);
  if($action==='session')respond(['csrf'=>$_SESSION['csrf'],'user'=>$user]);
- require_once __DIR__.'/../app/sales.php';require_once __DIR__.'/../app/mail.php';
+ require_once __DIR__.'/../app/sales.php';require_once __DIR__.'/../app/mail.php';require_once __DIR__.'/../app/password_reset.php';
+ if($action==='request_password_reset')requestPasswordReset($db,$data);
+ if($action==='reset_password')resetPassword($db,$data);
  if(str_starts_with($action,'admin_'))require __DIR__.'/../app/admin.php';
  if($action==='catalog'){
   $products=$db->query("SELECT p.id,p.name,p.description,p.price,p.stock,p.kind,c.name category,c.slug,(SELECT url FROM product_images i WHERE i.product_id=p.id ORDER BY sort_order LIMIT 1) image FROM products p JOIN categories c ON c.id=p.category_id WHERE p.active=1 ORDER BY p.id")->fetchAll();
@@ -33,11 +35,11 @@ try{
    try{run($db,'INSERT INTO users(name,email,password_hash) VALUES (?,?,?)',[$name,$email,password_hash($password,PASSWORD_DEFAULT)]);}catch(PDOException $e){if($e->getCode()==='23000')fail('Este correo ya está registrado.',409);throw $e;}
    $id=(int)$db->lastInsertId();run($db,"INSERT INTO user_roles(user_id,role_id) SELECT ?,id FROM roles WHERE name='customer'",[$id]);$db->commit();
   }else{
-   $row=run($db,'SELECT id,password_hash,active FROM users WHERE email=?',[$email])->fetch();
+   $row=run($db,'SELECT id,password_hash,active,password_version FROM users WHERE email=?',[$email])->fetch();
    $dummy='$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi';
    if(!password_verify($password,$row['password_hash']??$dummy)||!$row||!$row['active'])fail('Correo o contraseña incorrectos.',401);$id=(int)$row['id'];
   }
-  session_regenerate_id(true);$_SESSION['user']=['id'=>$id];$_SESSION['csrf']=bin2hex(random_bytes(32));respond(['user'=>currentUser($db),'csrf'=>$_SESSION['csrf']]);
+  session_regenerate_id(true);$_SESSION['user']=['id'=>$id];$_SESSION['password_version']=$action==='register'?1:(int)$row['password_version'];$_SESSION['csrf']=bin2hex(random_bytes(32));respond(['user'=>currentUser($db),'csrf'=>$_SESSION['csrf']]);
  }
  if($action==='orders'){
   $uid=requireUser();$orders=run($db,"SELECT o.id,o.status,o.currency,o.total,o.shipping_total,o.delivery_method,o.created_at,p.method payment_method,p.status payment_status FROM orders o LEFT JOIN payments p ON p.id=(SELECT MAX(id) FROM payments WHERE order_id=o.id) WHERE o.user_id=? AND o.sales_channel='web' ORDER BY o.id DESC LIMIT 100",[$uid])->fetchAll();
