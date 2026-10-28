@@ -1,6 +1,6 @@
 # TecnoSoft Solutions
 
-## Versión actual: PHP y XAMPP · 23 de octubre de 2026
+## Versión actual: PHP y XAMPP · 26 de octubre de 2026
 
 El proyecto académico actual está en **[tecnosoft-xampp](tecnosoft-xampp/)**. Incluye tienda de tecnología y juegos, cuentas de cliente y administración, inventario, pedidos, ventas presenciales y reportes en córdobas nicaragüenses.
 
@@ -8,10 +8,22 @@ El proyecto académico actual está en **[tecnosoft-xampp](tecnosoft-xampp/)**. 
 - [Área de trabajo de Visual Studio Code](tecnosoft-xampp/TecnoSoft.code-workspace).
 - [Reglas administrativas y límites del demo](tecnosoft-xampp/docs/reglas-administracion.md).
 - [Validaciones de correos, teléfonos, nombres y formularios](tecnosoft-xampp/docs/validaciones.md).
-- [Base de datos: 30 tablas, columnas y relaciones](tecnosoft-xampp/docs/modelo-relacional.html).
+- [Base de datos: 31 tablas, columnas y relaciones](tecnosoft-xampp/docs/modelo-relacional.html).
 - [Diagrama de relaciones](tecnosoft-xampp/docs/modelo-er.png).
 - [Resultados de las pruebas](tecnosoft-xampp/docs/verificacion-administracion.md).
 - [Preparación de InfinityFree, pendiente de publicar](tecnosoft-infinityfree/PUBLICACION.md).
+
+### Última actualización · 26 de octubre de 2026
+
+- Contraseñas nuevas sin espacios ni separadores, validadas en navegador y servidor.
+- Administradores dedicados a gestionar: sin carrito ni compras web, con bloqueo también en la API.
+- Recuperación mediante **Iniciar sesión → Olvidé mi contraseña**, con correo SMTP, enlace de treinta minutos, uso único y cierre de sesiones anteriores al cambiar la contraseña.
+- Detalles de producto que se cierran al hacer clic fuera; los productos agregados permanecen en el carrito.
+- Esquema vigente: **31 tablas, 34 claves externas y 182 columnas**.
+- [Uso y pruebas de recuperación de contraseña](tecnosoft-xampp/docs/recuperacion-contrasena.md).
+- [Pruebas de contraseñas y permisos](tecnosoft-xampp/docs/verificacion-registro-administrador.md).
+
+Pasaron las 32 comprobaciones de recuperación y los 83 casos previos de validación en PHP y JavaScript. Las pruebas usan una base separada y un servidor SMTP local de pruebas. La ampliación requiere respaldo y **TecnoSoft: actualizar base de datos**; después hay que iniciar sesión nuevamente.
 
 ### Avances de esta versión
 
