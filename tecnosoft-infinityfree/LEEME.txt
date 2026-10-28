@@ -1,6 +1,6 @@
-TecnoSoft Solutions - Preparación para InfinityFree - 23/10/2026
+TecnoSoft Solutions - Preparación para InfinityFree - 26/10/2026
 
-ESTADO: actualización administrativa preparada, NO PUBLICADA.
+ESTADO: actualización administrativa y recuperación de contraseña preparadas, NO PUBLICADA.
 La publicación fue cancelada. Subir a GitHub no cambia el sitio público.
 
 Lee PUBLICACION.md antes de utilizar estos archivos.

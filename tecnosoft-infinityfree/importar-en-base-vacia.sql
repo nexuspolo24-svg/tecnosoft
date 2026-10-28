@@ -1,5 +1,6 @@
 -- TecnoSoft Solutions · MariaDB 10.4 / MySQL 8 · UTF-8
 -- Instalación nueva; no borra tablas ni datos.
+
 CREATE TABLE roles (
 id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(40) NOT NULL UNIQUE
@@ -10,6 +11,7 @@ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 email VARCHAR(190) NOT NULL UNIQUE,
 password_hash VARCHAR(255) NOT NULL,
+password_version INT UNSIGNED NOT NULL DEFAULT 1,
 email_verified_at DATETIME NULL,
 phone VARCHAR(25) NULL,
 active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -316,6 +318,25 @@ INSERT IGNORE INTO settings(name,value) VALUES
 ('delivery_fee','0.00'),('transfer_instructions','Demostración académica: coordina los datos de transferencia con el administrador. No transfieras dinero real durante las pruebas.');
 
 INSERT INTO schema_migrations(version) VALUES ('2026-10-administracion');
+
+-- Recuperación por correo. Conserva usuarios, roles y pedidos.
+-- La columna users.password_version se agrega mediante tools/migrate.php.
+CREATE TABLE IF NOT EXISTS password_resets (
+id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+user_id BIGINT UNSIGNED NULL,
+email_hash CHAR(64) NOT NULL,
+ip_hash CHAR(64) NOT NULL,
+token_hash CHAR(64) NULL UNIQUE,
+expires_at DATETIME NULL,
+used_at DATETIME NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+INDEX idx_reset_user(user_id,created_at),
+INDEX idx_reset_email(email_hash,created_at),
+INDEX idx_reset_ip(ip_hash,created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO schema_migrations(version) VALUES ('2026-10-recuperacion');
 
 START TRANSACTION;
 INSERT INTO roles(name) VALUES ('customer'),('admin'),('technician');

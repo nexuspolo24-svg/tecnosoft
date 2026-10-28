@@ -40,3 +40,24 @@ INSERT IGNORE INTO settings(name,value) VALUES
 ('delivery_fee','0.00'),('transfer_instructions','Demostración académica: coordina los datos de transferencia con el administrador. No transfieras dinero real durante las pruebas.');
 
 INSERT IGNORE INTO schema_migrations(version) VALUES ('2026-10-administracion');
+
+SET @ts_sql=(SELECT IF(COUNT(*)=0,'ALTER TABLE users ADD COLUMN password_version INT UNSIGNED NOT NULL DEFAULT 1','SELECT 1') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='users' AND COLUMN_NAME='password_version');
+PREPARE ts_stmt FROM @ts_sql; EXECUTE ts_stmt; DEALLOCATE PREPARE ts_stmt;
+-- Recuperación por correo. Conserva usuarios, roles y pedidos.
+-- La columna users.password_version se agrega mediante tools/migrate.php.
+CREATE TABLE IF NOT EXISTS password_resets (
+id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+user_id BIGINT UNSIGNED NULL,
+email_hash CHAR(64) NOT NULL,
+ip_hash CHAR(64) NOT NULL,
+token_hash CHAR(64) NULL UNIQUE,
+expires_at DATETIME NULL,
+used_at DATETIME NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+INDEX idx_reset_user(user_id,created_at),
+INDEX idx_reset_email(email_hash,created_at),
+INDEX idx_reset_ip(ip_hash,created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO schema_migrations(version) VALUES ('2026-10-recuperacion');
