@@ -22,6 +22,7 @@
   }
   function password(value, register) {
     if (value.includes('\0')) return 'La contraseña contiene caracteres no permitidos.';
+    if (register && /[\p{Z}\u0009-\u000D\u0085\uFEFF]/u.test(value)) return 'La contraseña no admite espacios ni caracteres de separación.';
     if (new TextEncoder().encode(value).length > 72) return 'La contraseña admite como máximo 72 bytes; las tildes y algunos símbolos ocupan más de un byte.';
     if (register && [...value].length < 10) return 'Usa una contraseña de al menos 10 caracteres.';
     return value === '' ? 'Escribe tu contraseña.' : '';
